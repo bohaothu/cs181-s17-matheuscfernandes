@@ -105,7 +105,7 @@ Please type your solutions after the corresponding problems using this \LaTeX\ t
       w_0 &= \frac{1}{n} \sum_{i=1}^n y_i \\
       \boldw &= (\boldX^\top \boldX + \lambda \boldI)^{-1} \boldX^\top \boldy
     \end{align}
-  \item[(d)] In order to take the inversein the previous question, the
+  \item[(d)] In order to take the inverse in the previous question, the
     matrix $(\boldX^\top \boldX + \lambda \boldI)$ must be invertible.
     One way to ensure invertibility is by showing that a matrix is
     \textit{positive definite}, i.e. it has all positive
@@ -122,7 +122,17 @@ Please type your solutions after the corresponding problems using this \LaTeX\ t
 
 \subsubsection*{Solution}
 
+We can expand the equation: 
+\[\mcL(\boldw, w_0) = (\boldy - \boldX \boldw - w_0 {\bf 1 })^\top (\boldy - \boldX
+\boldw - w_0 {\bf 1 }) + \lambda \boldw^\top \boldw \]
+into 
+\[\mcL(\boldw, w_0) = \boldy^\top\boldy-    2\boldy^\top\boldX\boldw-     2w_0\boldy^\top \boldone+  2w_0\boldw^\top\boldX^\top\boldone+   \boldw^\top\boldX^\top\boldX\boldw +   w_0^2\boldone^\top\boldone+  \lambda\boldw^\top\boldw.\]
+Where re-arranging we obtain:
+\[\mcL(\boldw, w_0) = \boldy^\top\boldy-    2\boldy^\top\boldX\boldw+   \boldw^\top\boldX^\top\boldX\boldw + \lambda\boldw^\top\boldw +   w_0^2\boldone^\top\boldone  -     2w_0(\boldy^\top \boldone+  \boldw^\top\boldX^\top\boldone). \]
+
 \subsection*{(a)}
+
+
 
 \subsection*{(b)}
 
@@ -258,18 +268,19 @@ case, and for each of the following sets of basis functions:
 \figll{p3c}{0.7}{}
 
 \subsection*{(d)}
-\figll{p3d}{0.7}{}
+\figll{p3d}{0.6}{}
 \figll{p3d2}{0.7}{}
-
+In \cref{p3d} we can see that the regression function does not do a very good job modeling the average age as a prediction for future congresses. However, from \cref{p3d2}, we can see that the model does a fairly good job capturing the age distribution for the data we have for the congress 80 to 115. I would trust this model to obtain data for the current congresses as a model, but would not trust it to make future predictions as to what the average age of congress will look like in the future.
 
 \subsection*{(e)}
-\figll{p3e}{0.7}{}
+\figll{p3e}{0.6}{}
 \figll{p3e2}{0.7}{}
+In this case we see a similar result as discussed in part (d), in that this model does a very good job capturing the features of the current data whereas it does not do a good job predicting the average age of the congresses in the future. Another feature to notice is that even though we added complexity to the basis functions, we did not gain that complexity back in form of accuracy. The plot does not show any significant benefit between what we were able to achieve in part (d) versus here. We can see that by just adding more terms to our basis functions, we cannot increase the accuracy of our model, but instead, if we want to make our models better we must choose different basis functions or a different model other than linear regression all together.
 
 \newpage
 \begin{problem}[Calibration, 1pt]
 Approximately how long did this homework take you to complete?
 \end{problem}
 \textbf{Answer:}
-
+Approximately 4 hours.
 \end{document}
