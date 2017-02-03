@@ -1,8 +1,7 @@
 \documentclass[submit]{harvardml}
 
 % Put in your full name and email address.
-\name{Matheus C. Fernandes}
-\email{fernandes@fas.harvard.edu}
+
 
 % List any people you worked with.
 %\collaborators{%
@@ -131,17 +130,60 @@ Where re-arranging we obtain:
 \[\mcL(\boldw, w_0) = \boldy^\top\boldy-    2\boldy^\top\boldX\boldw+   \boldw^\top\boldX^\top\boldX\boldw + \lambda\boldw^\top\boldw +   w_0^2\boldone^\top\boldone  -     2w_0(\boldy^\top \boldone+  \boldw^\top\boldX^\top\boldone). \]
 
 \subsection*{(a)}
+Taking the partial w.r.t. our expanded equation above we obtain the following 
+\[\pp{\mcL(\boldw,w_0)}{w_0}=2w_0\boldone^\top\boldone-2\left(\boldy^\top\boldone+\boldw^\top\boldX^\top\boldone\right)\]
+where $\boldone^\top\boldone=n$, which then becomes
+\[\pp{\mcL(\boldw,w_0)}{w_0}=2w_0n-2\left(\boldy^\top\boldone+\boldw^\top\boldX^\top\boldone\right)\]
+Because the above stated assumption in that the data has been centered (by removing the mean) $\frac{1}{n} \sum_{i=1}^n
+x_{ij} = 0 $, this implies that $\boldw^\top\boldX^\top\boldone\rightarrow0$, such that
+\final{\pp{\mcL(\boldw,w_0)}{w_0}=2w_0n-2\sum_{i=1}^{n}y_i}
+where $\boldy^\top\boldone\rightarrow\sum_{i=1}^{n}y_i$.
 
 
 
 \subsection*{(b)}
+\[{\mcL(\boldw,w_0)}= \boldy^\top\boldy-    2\boldy^\top\boldX\boldw+   \boldw^\top\boldX^\top\boldX\boldw + \lambda\boldw^\top\boldw +   w_0^2\boldone^\top\boldone  -     2w_0(\boldy^\top \boldone+  \boldw^\top\boldX^\top\boldone)\]
+From this equation, which we obtained from above, we are able to cancel out a few of the terms given that they do not contain $\boldw$ in them. Such that the derivative becomes:
+\[\pp{\mcL(\boldw,w_0)}{\boldw}= \ub{-2\pp{}{\boldw}\left(\boldy^\top\boldX\boldw\right)}{\circled{1}} +   \ub{\pp{}{\boldw}\left(\boldw^\top\boldX^\top\boldX\boldw\right)}{\circled{2}}  + \ub{\pp{}{\boldw}\left(\lambda\boldw^\top\boldw \right) }{\circled{3}} \ub{-   2w_0\pp{}{\boldw}\left( \boldw^\top\boldX^\top\boldone\right)}{\circled{4}} \]
+
+\noindent Now, solving each individual term for their respective gradients w.r.t $\boldw$ we obtain the following:
+\e{\circled{1}\rightarrow -2\boldy^\top \boldX=-2\boldX^\top\boldy}
+\e{\circled{2}\rightarrow 2\boldX^\top\boldX\boldw}
+\e{\circled{3}\rightarrow \lambda2\boldw^\top}
+\e{\circled{4}\rightarrow -2w_0\boldone^\top\boldX^\top}
+Now by putting all of these terms back into the equation we obtain that the derivative is the following
+\[\pp{\mcL(\boldw,w_0)}{\boldw}= \ub{-2\boldX^\top\boldy}{\circled{1}} +   \ub{2\boldX^\top\boldX\boldw}{\circled{2}}  + \ub{\lambda2\boldw^\top}{\circled{3}} \ub{-2w_0\boldone^\top\boldX^\top}{\circled{4}} \]
+Because the above stated assumption in that $\frac{1}{n} \sum_{i=1}^n
+x_{ij} = 0 $, this implies that the last term $\circled{4}$ goes to zero as $\boldone^\top\boldX^\top\rightarrow0$ because $\boldone^\top\boldX^\top$ sums up to $\sum_{i=1}^nx_{ij}$ for every row. This in turn gives us the final expression as 
+\[\pp{\mcL(\boldw,w_0)}{\boldw}= {-2\boldX^\top\boldy} +   {2\boldX^\top\boldX\boldw} + {\lambda2\boldw^\top} \]
+Which can be fully simplified using simple algebra to 
+\final{\pp{\mcL(\boldw,w_0)}{\boldw}=2\left(  {-\boldX^\top\boldy} + \boldw\left(    {\boldX^\top\boldX} + {\lambda\boldI}\right)  \right)}
 
 \subsection*{(c)}
+In order to solve for the global optimizer of the loss function we must seek the $0$'s of the derivative of the loss function. From part (a) and part (b), we have obtained the derivative form with respect to finding the bias as well as finding the weight function derivatives. With that said, we must seek the optimal of both the bias and the rest of the weights independently as shown below.
+For the $w_0$ portion we begin by taking our results from part (a) and setting the derivative $\pp{\mcL(\boldw,w_0)}{w_0}=0$,such that
+\e{\pp{\mcL(\boldw,w_0)}{w_0}=2w_0n-2\sum_{i=1}^{n}y_i=0}
+Which solving for $w_0$ gives us
+\final{w_0={1\over n}\sum_{i=1}^{n}y_i}
+Likewise, for the $\boldw$ portion, we can solve for $\boldw$ in
+\e{\pp{\mcL(\boldw,w_0)}{\boldw}=2\left(  {-\boldX^\top\boldy} + \boldw\left(    {\boldX^\top\boldX} + {\lambda\boldI}\right)  \right)=0}
+such that we can simplify this expression to
+\e{{\boldX^\top\boldy} = \boldw\left(    {\boldX^\top\boldX} + {\lambda\boldI}\right)}
+where we move the multiplication w.r.t $\boldw$ on the RHS to the left by multiplying it by the inverse on both sides such that we obtain the final form as:
+\final{\boldw=\left(    {\boldX^\top\boldX} + {\lambda\boldI}\right)^{-1}\boldX^\top\boldy }
 
 \subsection*{(d)}
+In order to prove the invertibility of a matrix, we must ensure that the matrix is positive definite, meaning that all eigenvalues are positive. To make sure that we can solve the above stated equation and obtain the vector of weights $\boldw$ for our regression, we must invert the matrix $\left(    {\boldX^\top\boldX} + {\lambda\boldI}\right)$, which means that if this matrix is non-invertible we must seek a non-analytical approach to solving this problem. So, for this case, given that ${\boldX^\top\boldX} $ is semi-definite and that $\lambda>0$, making $\lambda\boldI$ positive definite, we can infer that the total matrix, is positive definite, meaning all eigenvalues are positive eigenvalues as we are introducing the stretch though the $\lambda\boldI$ term.
+\\ \\
+\noindent In other words, we can prove this mathematically by multiplying each part by a vector such that:
+\e{\boldX^\top\boldX \boldv=\alpha_i\boldv}
+\e{\lambda\ident\boldv=\lambda_i\boldv}
+If we know that the eigenvalues here are $a_i\geq0$ and that $\lambda_i>0$, we know that $((\alpha_i+\lambda_i)>0)$.\\
+\endproof
+
 
 \subsection*{(e)}
-
+Noting that the only difference between the ridge regression and the standard last-squares regression is the regularization term ($\lambda\boldw^\top\boldw$) at the end. The difference in the last problem highlights the importance of the regularization term in the ridge regression. There are two main take-aways from this problem: 1) that the regularization increases the loss and as seen from eq. (2) decreases the value of $w$ as it is inverse proportional. This helps make sure we are not overfitting the model to the data which would capture the noise of the data instead of the major features. 2) Also, from eq. (2) we can see that the regularization term also makes the system of equations always solvable by avoiding any singularity in the matrix - which with the regularization term becomes positive definite.
 
 
 
@@ -162,13 +204,13 @@ p(\boldw) = \mathcal{N}(\boldw \given \bold0, \alpha^{-1}\ident ),
 \end{align*}
 where $\alpha$ is as scalar precision hyperparameter that controls the variance of the Gaussian prior.  Define the likelihood as,
 \begin{align*}
-p(\boldy \given \boldx) &= \prod_{i=1}^n \mcN(y_i \given \boldw^\trans \boldx_i, \beta^{-1}),
+p(\boldy \given \boldw) &= \prod_{i=1}^n \mcN(y_i \given \boldw^\trans \boldx_i, \beta^{-1}),
 \end{align*}
 where $\beta$ is another fixed scalar defining the variance. \\
 
 
 \noindent Using the fact that the posterior is the product of the prior and the likelihood (up to a normalization constant), i.e., 
-\[\arg\max_{\boldw} \ln p(\boldw \given \boldy)= \arg\max_{\boldw} \ln p(\boldw) + \ln p(\boldy \given \boldw).\]
+\[\arg\max_{\boldw} \ln p(\boldw \given \boldy)= \arg\max_{\boldw} \left( \ln p(\boldw) + \ln p(\boldy \given \boldw)\right) .\]
 
 \noindent Show that maximizing the log posterior is equivalent to minimizing a regularized loss function given by ${\mcL(\boldw) + \lambda \mcR(\boldw)}$, where
 \begin{align*}
@@ -181,16 +223,40 @@ where $\beta$ is another fixed scalar defining the variance. \\
 
 
 \subsubsection*{Solution}
+We begin by defining the following equations for univariate and multivariate Gaussians, respectively:
 
+\eql{\mcN(z\given{\mu},\sigma^2)={1\over\sqrt{|2\pi\sigma^2|}}\exp\left( -{1\over2}(z-{\mu})\sigma^{-2}(z-{\mu})\right) }{univariate}
 
+\eql{\mcN(\boldz\given\bm{\mu},\bSigma)={1\over\sqrt{|2\pi\bSigma|}}\exp\left( -{1\over2}(\boldz-\bm{\mu})^\top\bSigma^{-1}(\boldz-\bm{\mu})\right) }{multivariate}
 
+\noindent Now, knowing that the prior is given by $\mathcal{N}(\boldw \given \bold0, \alpha^{-1}\ident )$, we can obtain the multivariate distribution for these parameters using \cref{multivariate}, such that 
 
+\e{p(\boldw) = \mathcal{N}(\boldw \given \bold0, \alpha^{-1}\ident )={1\over\sqrt{|2\pi\alpha^{-1}\ident|}}\exp\left( -{1\over2}\boldw^\top\alpha\ident(\boldw)\right) }
+Taking the ln of both sides gives some nice additive properties to this equation for further inspection. Thus it becomes:
 
+\e{\ln(p(\boldw)) = \ln(\mathcal{N}(\boldw \given \bold0, \alpha^{-1}\ident ))=-{1\over2}\ln\left(|2\pi\alpha^{-1}\ident|\right)  -{1\over2}\boldw^\top\alpha\ident(\boldw) }
 
+\noindent Where we separate the constant term $-{1\over2}\ln\left(|2\pi\alpha^{-1}\ident|\right)=c_1$ away, such that
 
+\e{\ln(p(\boldw)) =c_1 -{1\over2}\alpha\boldw^\top\boldw }
 
-
-
+\noindent Likewise, for the likelihood, we take the ln of both sides and follow a similar procedure as described above using the univariate equation \cref{univariate} such that:
+\begin{align*}
+	\ln(p(\boldy \given \boldw)) =& \sum_{i=1}^n \ln(\mcN(y_i \given \boldw^\trans \boldx_i, \beta^{-1}))\\
+	=&\sum_{i=1}^n-{1\over2}\left( \ln\left(|2\pi\beta^{-1}|\right) + (y_i-\boldw^\top\boldx_i)\beta(y_i-\boldw^\top\boldx_i)\right) \\
+	=&\sum_{i=1}^n-{1\over2}\left(c_2+(y_i-\boldw^\top\boldx_i)\beta(y_i-\boldw^\top\boldx_i)\right)\\
+	=&\sum_{i=1}^n-{1\over2}\left(c_2+\beta(y_i-\boldw^\top\boldx_i)^2\right)
+\end{align*}
+Putting it all together we get the following:
+\e{ \arg\max_{\boldw} \left( \ln p(\boldw) + \ln p(\boldy \given \boldw)\right) =\arg\max_{\boldw}\left(c_1 -{1\over2}\alpha\boldw^\top\boldw -   \sum_{i=1}^n{1\over2}\left(c_2+\beta(y_i-\boldw^\top\boldx_i)^2\right)\right)}
+Dropping the constant terms (in terms of $\boldw$), as they do not contribute to the rate of change when finding the optima, we obtain:
+\e{ \arg\max_{\boldw} \left( \ln p(\boldw) + \ln p(\boldy \given \boldw)\right) =\arg\max_{\boldw}-\left(\alpha{1\over2}\boldw^\top\boldw +   \beta{1\over2}\sum_{i=1}^n(y_i-\boldw^\top\boldx_i)^2\right)}
+When comparing both the LHS and RHS of the posterior comparison, we can infer that $\lambda$ in terms of  $\alpha$ and $\beta$ becomes
+\e{\lambda={\alpha\over\beta}}
+Such that now we have:
+\beql{ \arg\max_{\boldw} \left( \ln p(\boldw) + \ln p(\boldy \given \boldw)\right) = \arg\max_{\boldw}-\left({1\over2}\sum_{i=1}^n(y_i-\boldw^\top\boldx_i)^2+\lambda{1\over2}\boldw^\top\boldw \right)}{finalarg}
+Comparing \cref{finalarg} to the original equation above as a function of $\mcL(\boldw) \& \mcR(\boldw)$ we see that the only difference here is that there exists a negative sign. Therefore we see that maximizing the log posterior is equivalent to minimizing the regularized loss function. 
+\endproof
 
 
 
@@ -258,29 +324,40 @@ case, and for each of the following sets of basis functions:
 	\end{problem}
 
 \subsubsection*{Solution}
+To compare the different basis functions, we will look at the loss of function using the predetermined weights $\boldw^*$. The lower the values of the loss, the better it is fitting the data. However, we are not able to make any conclusions on overfitting the data solely based on the loss. To do that we look at the different graphs as shown below.
 \subsection*{(a)}
 \figll{p3a}{0.7}{}
-
+\e{\mcL(\boldw^*)_\text{a}\approx6.56}
+From this fit, we can see that the loss is not very low compared to the other fits. We also notice that some major features are not accounted for by this fit.
 \subsection*{(b)}
 \figll{p3b}{0.7}{}
+\e{\mcL(\boldw^*)_\text{b}\approx7.01}
+Based on the loss, we see that this regression fits the data the least of all other basis functions. We can see that it misses a lot of the small features of the data and over-simplifies the model, not capturing enough complexities. This basis function only captures two maxima and one minimum within the region of the data.
 
 \subsection*{(c)}
 \figll{p3c}{0.7}{}
-
+\e{\mcL(\boldw^*)_\text{c}\approx5.71}
+This basis function does a good job not overfitting the data compared to the other sinusoidal basis functions. Even though this function has a higher value of loss, it seem to be doing a good job not overfitting the data. 
 \subsection*{(d)}
 \figll{p3d}{0.6}{}
 \figll{p3d2}{0.7}{}
+\e{\mcL(\boldw^*)_\text{d}\approx1.93}
 In \cref{p3d} we can see that the regression function does not do a very good job modeling the average age as a prediction for future congresses. However, from \cref{p3d2}, we can see that the model does a fairly good job capturing the age distribution for the data we have for the congress 80 to 115. I would trust this model to obtain data for the current congresses as a model, but would not trust it to make future predictions as to what the average age of congress will look like in the future.
 
 \subsection*{(e)}
 \figll{p3e}{0.6}{}
 \figll{p3e2}{0.7}{}
-In this case we see a similar result as discussed in part (d), in that this model does a very good job capturing the features of the current data whereas it does not do a good job predicting the average age of the congresses in the future. Another feature to notice is that even though we added complexity to the basis functions, we did not gain that complexity back in form of accuracy. The plot does not show any significant benefit between what we were able to achieve in part (d) versus here. We can see that by just adding more terms to our basis functions, we cannot increase the accuracy of our model, but instead, if we want to make our models better we must choose different basis functions or a different model other than linear regression all together.
+\e{\mcL(\boldw^*)_\text{e}\approx1.45}
+In this case we see a similar result as discussed in part (d), in that this model does a very good job capturing the features of the current data whereas it does not do a good job predicting the average age of the congresses in the future. Another feature to notice is that even though we added complexity to the basis functions, we did not gain that complexity back in form of accuracy. The plot does not show any significant benefit between what we were able to achieve in part (d) versus here. We can see that by just adding more terms to our basis functions, we cannot increase the accuracy of our model, but instead, if we want to make our models better we must choose different basis functions or a different model other than linear regression all together. 
+\newpage
+\section*{Code for Problem 3}
+
+\includepython{linreg}{Python Code for Problem 3}
 
 \newpage
 \begin{problem}[Calibration, 1pt]
 Approximately how long did this homework take you to complete?
 \end{problem}
 \textbf{Answer:}
-Approximately 4 hours.
+Approximately 7 hours.
 \end{document}
