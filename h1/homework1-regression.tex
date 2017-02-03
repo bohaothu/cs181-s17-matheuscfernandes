@@ -177,6 +177,7 @@ In order to prove the invertibility of a matrix, we must ensure that the matrix 
 \noindent In other words, we can prove this mathematically by multiplying each part by a vector such that:
 \e{\boldX^\top\boldX \boldv=\alpha_i\boldv}
 \e{\lambda\ident\boldv=\lambda_i\boldv}
+\e{(\boldX^\top\boldX+\lambda\ident)\boldv=(\alpha_i+\lambda_i)\boldv}
 If we know that the eigenvalues here are $a_i\geq0$ and that $\lambda_i>0$, we know that $((\alpha_i+\lambda_i)>0)$.\\
 \endproof
 
@@ -327,7 +328,7 @@ To compare the different basis functions, we will look at the loss of function u
 \subsection*{(a)}
 \figll{p3a}{0.7}{}
 \e{\mcL(\boldw^*)_\text{a}\approx6.56}
-From this fit, we can see that the loss is not very low compared to the other fits. We also notice that some major features are not accounted for by this fit.
+From this fit, we can see that the loss is quite high compared to the other fits, particularly the sinusoidal fits. We also notice that some major features are not accounted for by this fit.
 \subsection*{(b)}
 \figll{p3b}{0.7}{}
 \e{\mcL(\boldw^*)_\text{b}\approx7.01}
@@ -341,13 +342,13 @@ This basis function does a good job not overfitting the data compared to the oth
 \figll{p3d}{0.6}{}
 \figll{p3d2}{0.7}{}
 \e{\mcL(\boldw^*)_\text{d}\approx1.93}
-In \cref{p3d} we can see that the regression function does not do a very good job modeling the average age as a prediction for future congresses. However, from \cref{p3d2}, we can see that the model does a fairly good job capturing the age distribution for the data we have for the congress 80 to 115. I would trust this model to obtain data for the current congresses as a model, but would not trust it to make future predictions as to what the average age of congress will look like in the future.
+In \cref{p3d} we can see that the regression function does not do a very good job modeling the average age as a prediction for future congresses. However, from \cref{p3d2}, we can see that the model does a fairly good job capturing the age distribution for the data we have for the congress 80 to 115. I would trust this model to obtain data for the current congresses as a model, but would not trust it to make future predictions as to what the average age of congress will look like in the future. Furthermore, we can see that at the edges of fig (6), there is some overfitting the data, as the red line captures a non-existing bump at the end.
 
 \subsection*{(e)}
 \figll{p3e}{0.6}{}
 \figll{p3e2}{0.7}{}
 \e{\mcL(\boldw^*)_\text{e}\approx1.45}
-In this case we see a similar result as discussed in part (d), in that this model does a very good job capturing the features of the current data whereas it does not do a good job predicting the average age of the congresses in the future. Another feature to notice is that even though we added complexity to the basis functions, we did not gain that complexity back in form of accuracy. The plot does not show any significant benefit between what we were able to achieve in part (d) versus here. We can see that by just adding more terms to our basis functions, we cannot increase the accuracy of our model, but instead, if we want to make our models better we must choose different basis functions or a different model other than linear regression all together. 
+In this case we see a similar result as discussed in part (d), in that this model does a very good job capturing the features of the current data whereas it does not do a good job predicting the average age of the congresses in the future. Another feature to notice is that even though we added complexity to the basis functions, we did not gain that complexity back in form of accuracy. The plot does not show any significant benefit between what we were able to achieve in part (d) versus here. We can see that by just adding more terms to our basis functions, we cannot increase the accuracy of our model, but instead, if we want to make our models better we must choose different basis functions or a different model other than linear regression all together. Furthermore, we can see that at the edges of fig (8), there is some overfitting the data, as the red line captures a non-existing bump at the right end of the graph.
 \newpage
 \section*{Code for Problem 3}
 
