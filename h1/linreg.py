@@ -10,8 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Creating the different basis functions according to the PSET
-def p3a(times): return np.ones(times.shape),times,times**2,times**3,times**4,times**5,times**6
-def p3b(times): return np.ones(times.shape),times,times**2,times**3,times**4
+def p3a(times): return np.ones(times.shape),times,times**2.,times**3.,times**4.,times**5.,times**6.
+def p3b(times): return np.ones(times.shape),times,times**2.,times**3.,times**4.
 def p3c(times): return np.ones(times.shape),np.sin(times/1.),np.sin(times/2.),np.sin(times/3.),np.sin(times/4.),np.sin(times/5.),np.sin(times/6.)
 def p3d(times): return np.ones(times.shape),np.sin(times/1.),np.sin(times/2.),np.sin(times/3.),np.sin(times/4.),np.sin(times/5.),np.sin(times/6.),np.sin(times/7.),np.sin(times/8.),np.sin(times/9.),np.sin(times/10.)
 def p3e(times): return np.ones(times.shape),np.sin(times/1.),np.sin(times/2.),np.sin(times/3.),np.sin(times/4.),np.sin(times/5.),np.sin(times/6.),np.sin(times/7.),np.sin(times/8.),np.sin(times/9.),np.sin(times/10.),np.sin(times/11.),np.sin(times/12.),np.sin(times/13.),np.sin(times/14.),np.sin(times/15.),np.sin(times/16.),np.sin(times/17.),np.sin(times/18.),np.sin(times/19.),np.sin(times/20.),np.sin(times/21.),np.sin(times/22.)
@@ -69,7 +69,12 @@ grid_Yhat  = np.dot(grid_X.T, w)
 plt.plot(times, ages, 'o', grid_times, grid_Yhat, '-')
 plt.xlabel("Congress age (nth Congress)")
 plt.ylabel("Average age")
-plt.show()
+# plt.show()
 # plt.savefig('images/p3e.pdf', bbox_inches='tight')
 
+# Computing the Loss for each part to see how well the model is fitting the data
+Loss=0
+for i in xrange(len(X)):
+	Loss+=1./2.*(ages[i]-np.dot(basis(times[i]),w))**2
+print 'The loss using this basis function is',Loss
 
