@@ -2,6 +2,7 @@ from scipy.stats import multivariate_normal
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as c
+import pandas as pd
 
 # Please implement the fit and predict methods of this class. You can add additional private methods
 # by beginning them with two underscores. It may look like the __dummyPrivateMethod below.
@@ -11,6 +12,8 @@ import matplotlib.colors as c
 class GaussianGenerativeModel:
     def __init__(self, isSharedCovariance=False):
         self.isSharedCovariance = isSharedCovariance
+        self.numberOfClasses=3
+        self.iterations=100
 
     # Just to show how to make 'private' methods
     def __dummyPrivateMethod(self, input):
@@ -20,8 +23,22 @@ class GaussianGenerativeModel:
     def fit(self, X, Y):
         self.X = X
         self.Y = Y
+        isSharedCovariance=self.isSharedCovariance
+        numberOfClasses = self.numberOfClasses
+        iterations=self.iterations
 
-        
+        if isSharedCovariance:
+            mu=np.zeros((numberOfClasses)) # create a mean vector with means for all of the different classes
+            sigma=1 # create a shared covariance value
+            pik=np.zeros((numberOfClasses))
+            for k in xrange(numberOfClasses): # looping over class K
+                bv=multivariate_normal(mu[k],sigma) #create a multivariate distribution for each class with shared variance
+                bv=bv.pdf(X[:,k]) # obtain the PDF for a given class for each of the vales of X
+
+
+        self.mu=mu # pass back the values of the mean
+        self.sigma=sigma # pass back the values of the variance
+
         return
 
     # TODO: Implement this method!

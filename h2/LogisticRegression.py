@@ -13,6 +13,8 @@ class LogisticRegression:
     def __init__(self, eta, lambda_parameter):
         self.eta = eta
         self.lambda_parameter = lambda_parameter
+        self.numberOfClasses=3
+        self.iterations=100
     
     # Just to show how to make 'private' methods
     def __dummyPrivateMethod(self, input):
@@ -23,25 +25,35 @@ class LogisticRegression:
     def fit(self, X, C):
         self.X = X
         self.C = C
+
         lambda_parameter=self.lambda_parameter
+        eta = self.eta
+        iterations=self.iterations
+        numberOfClasses=self.numberOfClasses
 
 
-        C=pd.get_dummies(C)
-        Bias=np.ones((C.shape[0]))
+        C=pd.get_dummies(C) # convert all of the values to one-hot vectors
+        Bias=np.ones((C.shape[0])) #create a bias column
 
-        X=np.column_stack((Bias,X))
+        X=np.column_stack((Bias,X)) # stack the bias column
 
-        w=np.ones((3,3))
-        wx=np.dot(X,w)   ### double check this to make sure its correct
-        sf=np.zeros((wx.shape[0],wx.shape[1])) #softmax matrix
-        for k in xrange(wx.shape[1]): # for all the classes
-            for i in xrange(wx.shape[0]): # for all the given data
-                sf[i,k]=np.exp(wx[i,k])
-            sumSf=np.sum(sf[:,k]) # create a sum vector for the soft max
-            sf[:,k]=sf[:,k]/sumSf # divide each class by the sum vector for that respective class
+        w=np.ones((numberOfClasses,numberOfClasses)) # initialize a weight matrix
 
-        L=np.transpose(np.dot(np.transpose(X),sf-C))
-        L=L+lambda_parameter*w
+        for it in xrange(iterations):
+            wx=np.dot(X,w)   ### double check this to make sure its correct
+            sf=np.zeros((wx.shape[0],wx.shape[1])) #softmax matrix
+            for k in xrange(wx.shape[1]): # for all the classes
+                for i in xrange(wx.shape[0]): # for all the given data
+                    sf[i,k]=np.exp(wx[i,k]) # convert the wx to the exponential form for the softmax function
+                sumSf=np.sum(sf[:,k]) # create a sum vector for the soft max
+                sf[:,k]=sf[:,k]/sumSf # divide each class by the sum vector for that respective class
+
+            L=np.transpose(np.dot(np.transpose(X),sf-C))
+            L=L+lambda_parameter*w
+
+            w=w-eta*L
+            print it
+            print w
 
         self.weights=w
         return
