@@ -20,6 +20,8 @@ class GaussianGenerativeModel:
     def fit(self, X, Y):
         self.X = X
         self.Y = Y
+
+        
         return
 
     # TODO: Implement this method!

@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as c
+import pandas as pd
 from scipy.misc import logsumexp
 
 # Please implement the fit and predict methods of this class. You can add additional private methods
@@ -17,16 +18,40 @@ class LogisticRegression:
     def __dummyPrivateMethod(self, input):
         return None
 
+
     # TODO: Implement this method!
     def fit(self, X, C):
         self.X = X
         self.C = C
+        lambda_parameter=self.lambda_parameter
+
+
+        C=pd.get_dummies(C)
+        Bias=np.ones((C.shape[0]))
+
+        X=np.column_stack((Bias,X))
+
+        w=np.ones((3,3))
+        wx=np.dot(X,w)   ### double check this to make sure its correct
+        sf=np.zeros((wx.shape[0],wx.shape[1])) #softmax matrix
+        for k in xrange(wx.shape[1]): # for all the classes
+            for i in xrange(wx.shape[0]): # for all the given data
+                sf[i,k]=np.exp(wx[i,k])
+            sumSf=np.sum(sf[:,k]) # create a sum vector for the soft max
+            sf[:,k]=sf[:,k]/sumSf # divide each class by the sum vector for that respective class
+
+        L=np.transpose(np.dot(np.transpose(X),sf-C))
+        L=L+lambda_parameter*w
+
+        self.weights=w
         return
 
     # TODO: Implement this method!
     def predict(self, X_to_predict):
         # The code in this method should be removed and replaced! We included it just so that the distribution code
         # is runnable and produces a (currently meaningless) visualization.
+        w=self.weights
+
         Y = []
         for x in X_to_predict:
             val = 0
