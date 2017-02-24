@@ -74,9 +74,9 @@ class GaussianGenerativeModel:
                     lkh += (np.log(2. * math.pi) + (1. / 2.) * np.log(np.linalg.det(sigma[k])) + (1. / 2.) * np.matmul(
                         np.matmul(mult, sigmaInv), mult.T)) * C[i, k] - np.log(pik[k])
         if isSharedCovariance:
-            print 'shared covariance likelihood is: '+str(lkh[0,0])+'\n'
+            print 'shared covariance log likelihood is: '+str(lkh[0,0])+'\n'
         else:
-            print 'non-shared covariance likelihood is: '+str(lkh[0,0])+'\n'
+            print 'non-shared covariance log likelihood is: '+str(lkh[0,0])+'\n'
 
 
     # TODO: Implement this method!
