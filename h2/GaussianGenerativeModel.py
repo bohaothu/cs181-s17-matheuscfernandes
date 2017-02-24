@@ -2,6 +2,7 @@ from scipy.stats import multivariate_normal
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as c
+import math
 import pandas as pd
 
 # Please implement the fit and predict methods of this class. You can add additional private methods
@@ -30,39 +31,53 @@ class GaussianGenerativeModel:
         mu=np.zeros((2,3))
         pik=[];sigma=[];valuesAll=[]
 
-        if isSharedCovariance:
-            sigma=(np.cov(X, rowvar=0))
+        if isSharedCovariance: sigma=np.zeros((2,2))
         for k in xrange(numberOfClasses): # looping over class K
             values=X[Y==k,:]
             valuesAll.append(values)
             YY=Y[Y==k]
 
-            pik.append(float(np.sum(YY))/float(np.sum(Y)))
+            pik.append(float(len(YY))/float(len(Y)))
             mu[0,k]=np.mean([values[:,0]])
             mu[1,k] = np.mean([values[:,1]])
             if not isSharedCovariance:
                 sigma.append(np.cov(values,rowvar=0))
-
-        if isSharedCovariance:
-            BV0 = multivariate_normal(mu[:,0], sigma)
-            BV1 = multivariate_normal(mu[:,1], sigma)
-            BV2 = multivariate_normal(mu[:,2], sigma)
-        else:
-            BV0 = multivariate_normal(mu[:, 0], sigma[0])
-            BV1 = multivariate_normal(mu[:, 1], sigma[1])
-            BV2 = multivariate_normal(mu[:, 2], sigma[2])
-
-        lkh = []
-        lkh.append(sum(np.log(BV0.pdf(valuesAll[0])*pik[0])))
-        lkh.append(sum(np.log(BV1.pdf(valuesAll[1])*pik[1])))
-        lkh.append(sum(np.log(BV2.pdf(valuesAll[2])*pik[2])))
-        print lkh
+            if isSharedCovariance:
+                sigma = sigma+(float(len(values))/float(len(X)))*(np.cov(values, rowvar=0))
 
 
         self.mu=mu # pass back the values of the mean
         self.sigma=sigma # pass back the values of the variance
         self.pik=pik
         return
+
+    def likelihood(self):
+        mu=self.mu
+        sigma=self.sigma
+        Y=self.Y
+        X=self.X
+        C = np.array(pd.get_dummies(Y))
+        pik=self.pik
+        isSharedCovariance=self.isSharedCovariance
+
+        lkh=0
+
+        for k in xrange(C.shape[1]):
+            for i in xrange(C.shape[0]):
+
+                mult=np.asmatrix(X[i,:]-mu[:,k])
+                if isSharedCovariance:
+                    sigmaInv = np.linalg.inv(sigma)
+                    lkh += (np.log(2.*math.pi)+(1./2.)*np.log(np.linalg.det(sigma))+(1./2.)*np.matmul(np.matmul(mult,sigmaInv),mult.T))*C[i,k]-np.log(pik[k])
+                else:
+                    sigmaInv = np.linalg.inv(sigma[k])
+                    lkh += (np.log(2. * math.pi) + (1. / 2.) * np.log(np.linalg.det(sigma[k])) + (1. / 2.) * np.matmul(
+                        np.matmul(mult, sigmaInv), mult.T)) * C[i, k] - np.log(pik[k])
+        if isSharedCovariance:
+            print 'shared covariance likelihood is: '+str(lkh[0,0])+'\n'
+        else:
+            print 'non-shared covariance likelihood is: '+str(lkh[0,0])+'\n'
+
 
     # TODO: Implement this method!
     def predict(self, X_to_predict):
@@ -78,13 +93,13 @@ class GaussianGenerativeModel:
                 mv=multivariate_normal(mu[:,k],sigma[k]) #create a multivariate distribution for each class with shared variance
             if isSharedCovariance:
                 mv = multivariate_normal(mu[:, k], sigma)
-            predict[:,k]=mv.pdf(X_to_predict)# obtain the PDF for a given class for each of the vales of X
+            predict[:,k]=mv.pdf(X_to_predict)*pik[k]# obtain the PDF for a given class for each of the vales of X
         Y=np.argmax(predict,axis=1)
 
         return np.array(Y)
 
     # Do not modify this method!
-    def visualize(self, output_file, width=3, show_charts=True):
+    def visualize(self, output_file, width=3, show_charts=False):
         X = self.X
 
         # Create a grid of points

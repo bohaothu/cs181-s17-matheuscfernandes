@@ -49,10 +49,12 @@ class LogisticRegression:
             loss.append(-np.sum((C*np.log(sf)))+lambda_parameter*np.sum(w*w))
 
             w=w-eta*(L+2*lambda_parameter*w)
-
             itAll.append(it)
-
+        plt.figure()
         plt.plot(itAll,loss)
+        plt.savefig('logistic_regression_loss_new.png')
+
+        print 'the final loss for the logistic regression model is: '+str(loss[-1])+'\n'
 
         self.weights=w
         return
@@ -70,7 +72,7 @@ class LogisticRegression:
 
         return Y
 
-    def visualize(self, output_file, width=2, show_charts=True):
+    def visualize(self, output_file, width=2, show_charts=False):
         X = self.X
 
         # Create a grid of points
@@ -93,7 +95,7 @@ class LogisticRegression:
         # Visualize them.
         plt.figure()
         plt.pcolormesh(xx,yy,Y_hat, cmap=cMap)
-        plt.scatter(X[:, 0], X[:, 1], c=self.C, cmap=cMap)
+        plt.scatter(X[:, 0], X[:, 1], c=self.C, cmap=cMap, lw=1)
         plt.savefig(output_file)
         if show_charts:
             plt.show()
