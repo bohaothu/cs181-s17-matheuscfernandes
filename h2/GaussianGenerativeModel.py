@@ -27,36 +27,64 @@ class GaussianGenerativeModel:
         numberOfClasses = self.numberOfClasses
         iterations=self.iterations
 
+        mu=np.zeros((2,3))
+        pik=[];sigma=[];valuesAll=[]
+
         if isSharedCovariance:
-            mu=np.zeros((numberOfClasses)) # create a mean vector with means for all of the different classes
-            sigma=1 # create a shared covariance value
-            pik=np.zeros((numberOfClasses))
-            for k in xrange(numberOfClasses): # looping over class K
-                bv=multivariate_normal(mu[k],sigma) #create a multivariate distribution for each class with shared variance
-                bv=bv.pdf(X[:,k]) # obtain the PDF for a given class for each of the vales of X
+            sigma=(np.cov(X, rowvar=0))
+        for k in xrange(numberOfClasses): # looping over class K
+            values=X[Y==k,:]
+            valuesAll.append(values)
+            YY=Y[Y==k]
+
+            pik.append(float(np.sum(YY))/float(np.sum(Y)))
+            mu[0,k]=np.mean([values[:,0]])
+            mu[1,k] = np.mean([values[:,1]])
+            if not isSharedCovariance:
+                sigma.append(np.cov(values,rowvar=0))
+
+        if isSharedCovariance:
+            BV0 = multivariate_normal(mu[:,0], sigma)
+            BV1 = multivariate_normal(mu[:,1], sigma)
+            BV2 = multivariate_normal(mu[:,2], sigma)
+        else:
+            BV0 = multivariate_normal(mu[:, 0], sigma[0])
+            BV1 = multivariate_normal(mu[:, 1], sigma[1])
+            BV2 = multivariate_normal(mu[:, 2], sigma[2])
+
+        lkh = []
+        lkh.append(sum(np.log(BV0.pdf(valuesAll[0])*pik[0])))
+        lkh.append(sum(np.log(BV1.pdf(valuesAll[1])*pik[1])))
+        lkh.append(sum(np.log(BV2.pdf(valuesAll[2])*pik[2])))
+        print lkh
 
 
         self.mu=mu # pass back the values of the mean
         self.sigma=sigma # pass back the values of the variance
-
+        self.pik=pik
         return
 
     # TODO: Implement this method!
     def predict(self, X_to_predict):
         # The code in this method should be removed and replaced! We included it just so that the distribution code
         # is runnable and produces a (currently meaningless) visualization.
-        Y = []
-        for x in X_to_predict:
-            val = 0
-            if x[1] > 4:
-                val += 1
-            if x[1] > 6:
-                val += 1
-            Y.append(val)
+        isSharedCovariance=self.isSharedCovariance
+        mu=self.mu
+        pik=self.pik
+        sigma=self.sigma
+        predict=np.zeros((X_to_predict.shape[0],3))
+        for k in xrange(3):
+            if not isSharedCovariance:
+                mv=multivariate_normal(mu[:,k],sigma[k]) #create a multivariate distribution for each class with shared variance
+            if isSharedCovariance:
+                mv = multivariate_normal(mu[:, k], sigma)
+            predict[:,k]=mv.pdf(X_to_predict)# obtain the PDF for a given class for each of the vales of X
+        Y=np.argmax(predict,axis=1)
+
         return np.array(Y)
 
     # Do not modify this method!
-    def visualize(self, output_file, width=3, show_charts=False):
+    def visualize(self, output_file, width=3, show_charts=True):
         X = self.X
 
         # Create a grid of points

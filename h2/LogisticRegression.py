@@ -10,11 +10,11 @@ from scipy.misc import logsumexp
 # the given function headers (they must take and return the same arguments), and as long as you
 # don't change anything in the .visualize() method. 
 class LogisticRegression:
-    def __init__(self, eta, lambda_parameter):
+    def __init__(self, eta, lambda_parameter,iterations):
         self.eta = eta
         self.lambda_parameter = lambda_parameter
         self.numberOfClasses=3
-        self.iterations=100
+        self.iterations=iterations
     
     # Just to show how to make 'private' methods
     def __dummyPrivateMethod(self, input):
@@ -31,29 +31,28 @@ class LogisticRegression:
         iterations=self.iterations
         numberOfClasses=self.numberOfClasses
 
+        C=np.array(pd.get_dummies(C)) # convert all of the values to one-hot vectors
 
-        C=pd.get_dummies(C) # convert all of the values to one-hot vectors
         Bias=np.ones((C.shape[0])) #create a bias column
-
         X=np.column_stack((Bias,X)) # stack the bias column
 
-        w=np.ones((numberOfClasses,numberOfClasses)) # initialize a weight matrix
-
+        w=np.ones((X.shape[1],numberOfClasses)) # initialize a weight matrix
+        loss=[];itAll=[]
         for it in xrange(iterations):
-            wx=np.dot(X,w)   ### double check this to make sure its correct
-            sf=np.zeros((wx.shape[0],wx.shape[1])) #softmax matrix
-            for k in xrange(wx.shape[1]): # for all the classes
-                for i in xrange(wx.shape[0]): # for all the given data
-                    sf[i,k]=np.exp(wx[i,k]) # convert the wx to the exponential form for the softmax function
-                sumSf=np.sum(sf[:,k]) # create a sum vector for the soft max
-                sf[:,k]=sf[:,k]/sumSf # divide each class by the sum vector for that respective class
+            wx=np.matmul(X,np.transpose(w))   ### double check this to make sure its correct
+            sf= np.exp(wx)  # convert the wx to the exponential form for the softmax function
+            for i in xrange(wx.shape[0]): # for all the classes
+                sumSf=np.sum(sf[i,:]) # create a sum vector for the soft max
+                sf[i,:]=sf[i,:]/sumSf # divide each class by the sum vector for that respective class
 
-            L=np.transpose(np.dot(np.transpose(X),sf-C))
-            L=L+lambda_parameter*w
+            L=np.matmul(np.transpose((sf-C)),X)
+            loss.append(-np.sum((C*np.log(sf)))+lambda_parameter*np.sum(w*w))
 
-            w=w-eta*L
-            print it
-            print w
+            w=w-eta*(L+2*lambda_parameter*w)
+
+            itAll.append(it)
+
+        plt.plot(itAll,loss)
 
         self.weights=w
         return
@@ -64,17 +63,14 @@ class LogisticRegression:
         # is runnable and produces a (currently meaningless) visualization.
         w=self.weights
 
-        Y = []
-        for x in X_to_predict:
-            val = 0
-            if x[1] > 4:
-                val += 1
-            if x[1] > 6:
-                val += 1
-            Y.append(val)
-        return np.array(Y)
+        Bias = np.ones((X_to_predict.shape[0]))  # create a bias column
+        X_to_predict = np.column_stack((Bias, X_to_predict))  # stack the bias column
 
-    def visualize(self, output_file, width=2, show_charts=False):
+        Y=np.argmax(np.matmul(X_to_predict,np.transpose(w)),axis=1)
+
+        return Y
+
+    def visualize(self, output_file, width=2, show_charts=True):
         X = self.X
 
         # Create a grid of points
