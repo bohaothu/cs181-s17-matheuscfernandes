@@ -10,7 +10,7 @@ import matplotlib.colors as c
 class Perceptron(object):
 	def __init__(self, numsamples):
 		self.numsamples = numsamples
-		
+
 	def fit(self, X, Y):
 		self.X = X
 		self.Y = Y
@@ -47,7 +47,7 @@ class Perceptron(object):
 		plt.figure()
 		plt.pcolormesh(xx,yy,Y_hat, cmap=cMap)
 		if include_points:
-			plt.scatter(X[:, 0], X[:, 1], c=self.Y, cmap=cMap)
+			plt.scatter(X[:, 0], X[:, 1], c=self.Y, cmap=cMap, facecolor='0.5')
 		if save_fig:
 			plt.savefig(output_file)
 		if show_charts:
