@@ -6,7 +6,6 @@ import pandas as pd
 from LogisticRegression import LogisticRegression
 from GaussianGenerativeModel import GaussianGenerativeModel
 
-
 ## These are the hyperparameters to the classifiers. You may need to
 # adjust these as you try to find the best fit for each classifier.
 
@@ -33,9 +32,6 @@ nb2.fit(X,Y)
 nb2.visualize("generative_result_shared_covariances.png")
 nb2.likelihood()
 
-lr = LogisticRegression(eta=eta, lambda_parameter=lambda_parameter, iterations=iterations)
-lr.fit(X,Y)
-lr.visualize('logistic_regression_result.png')
-
-
-
+# lr = LogisticRegression(eta=eta, lambda_parameter=lambda_parameter, iterations=iterations)
+# lr.fit(X,Y)
+# lr.visualize('logistic_regression_result.png')

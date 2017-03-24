@@ -20,7 +20,6 @@ class LogisticRegression:
     def __dummyPrivateMethod(self, input):
         return None
 
-
     # TODO: Implement this method!
     def fit(self, X, C):
         self.X = X

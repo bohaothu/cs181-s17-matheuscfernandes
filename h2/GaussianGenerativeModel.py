@@ -39,12 +39,11 @@ class GaussianGenerativeModel:
 
             pik.append(float(len(YY))/float(len(Y)))
             mu[0,k]=np.mean([values[:,0]])
-            mu[1,k] = np.mean([values[:,1]])
+            mu[1,k]=np.mean([values[:,1]])
             if not isSharedCovariance:
                 sigma.append(np.cov(values,rowvar=0))
             if isSharedCovariance:
                 sigma = sigma+(float(len(values))/float(len(X)))*(np.cov(values, rowvar=0))
-
 
         self.mu=mu # pass back the values of the mean
         self.sigma=sigma # pass back the values of the variance
@@ -77,7 +76,6 @@ class GaussianGenerativeModel:
             print 'shared covariance log likelihood is: '+str(lkh[0,0])+'\n'
         else:
             print 'non-shared covariance log likelihood is: '+str(lkh[0,0])+'\n'
-
 
     # TODO: Implement this method!
     def predict(self, X_to_predict):
