@@ -225,9 +225,9 @@ X = data[:, :2]
 Y = data[:, 2]
 
 # These are the parameters for the models. Please play with these and note your observations about speed and successful hyperplane formation.
-beta = 20
+beta = 0.5
 N = 100
-numsamples = 10000
+numsamples = 5000
 
 kernel_file_name = 'k.png'
 budget_kernel_file_name = 'bk.png'
