@@ -35,7 +35,7 @@ class KMeans(object):
         plt.title(r'Loss vs. RandomRestart K={}'.format(int(self.K)))
         plt.xlabel(r'Random Restart Number')
         plt.ylabel(r'Final Loss')
-        plt.savefig("plots/RR-K{}.pdf".format(int(self.K)), dpi=100)
+        # plt.savefig("plots/RR-K{}.pdf".format(int(self.K)), dpi=100)
 
         self.plot_representative_images(self.D, X)
         self.plot_Loss()
@@ -90,7 +90,11 @@ class KMeans(object):
         self.ctAll = np.array(ctAll)
         self.mu = mu
 
+        self.plot_representative_images(self.D, X)
+        self.plot_Loss()
+
         return min(Loss)
+
 
     def plot_Loss(self):
         plt.figure()
@@ -98,7 +102,7 @@ class KMeans(object):
         plt.title(r'Loss vs. Iteration K={}'.format(self.K))
         plt.xlabel(r'Iteration')
         plt.ylabel(r'Loss')
-        plt.savefig("plots/L-K{}.pdf".format(int(self.K)), dpi=100)
+        plt.savefig("plots/L-K{}-R{}.pdf".format(int(self.K),int(self.randomR)), dpi=100)
 
     def plot_representative_images(self, D, X):
         import matplotlib.gridspec as gridspec
@@ -123,7 +127,7 @@ class KMeans(object):
                 ax[ctr].axis('off')
                 ctr += 1
         plt.suptitle(r'K={} and D={}'.format(int(muImages.shape[0]), int(D)), size=20)
-        plt.savefig("plots/KD-K{}.pdf".format(int(self.K)), dpi=100)
+        plt.savefig("plots/KD-K{}-R{}.pdf".format(int(self.K),int(self.randomR)), dpi=100)
 
     # This should return the arrays for K images. Each image should represent the mean of each of the fitted clusters.
     def get_mean_images(self):
@@ -162,5 +166,7 @@ pics = np.load("images.npy", allow_pickle=False)
 
 K = 10
 D = 10
+numberOfRestarts=3
 KMeansClassifier = KMeans(K,D)
-KMeansClassifier.varyingK(pics,10,[5,10,15])
+# KMeansClassifier.varyingK(pics,numberOfRestarts,[5,10,15])
+KMeansClassifier.random_Restarts(pics, numberOfRestarts)
