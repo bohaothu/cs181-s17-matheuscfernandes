@@ -15,7 +15,7 @@ class KMeans(object):
         self.K = K
 
     def __norm(self,X):
-        return sum(sum(X**2.))**(1./2.)
+        return np.linalg.norm(X)#np.sum(np.sum(X**2.))**(1./2.)
 
     # X is a (N x 28 x 28) array where 28x28 is the dimensions of each of the N images.
     def fit(self, X):
@@ -24,39 +24,33 @@ class KMeans(object):
         mu=np.zeros((K,X.shape[1],X.shape[2]))
         lenXi=X.shape[0]
 
-        for k in range(int(K)):
+        for k in range(int(K)): # initialize the variable mu within random points of X
             beginInt = random.randint(0, (X.shape[0]) - 1)
             mu[k,:,:]=X[beginInt,:,:]
 
+        #usefull definitions for convergence
         converged=True
         ct=0
+
         while converged:
             ct+=1
             print'Iteration: ',ct
             r=np.zeros((X.shape[0],K))
 
             for i in range(lenXi):
-                allMu=[]
-                for k in range(int(K)):
-                    allMu.append(self.__norm(X[i,:,:]-mu[k,:,:]))
-
-                allMu=np.array(allMu)
+                allMu=np.array([self.__norm(X[i,:,:]-mu[k,:,:]) for k in range(int(K))])
                 r[i,np.argmin(allMu)]=1.
 
-            if ct==1: oldLoss=0
+            if ct==1: oldLoss=0 #updating/initializing previous loss function
             else: oldLoss=Loss
 
-            Loss=0.
 
             for k in range(K):
                 nk=sum(r[:,k])
-
                 if nk!=0:
-                    mu[k,:,:]=0.
-                    for i in range(lenXi):
-                        mu[k,:,:]+=(1./nk)*r[i,k]*X[i,:,:]
-                    for i in range(lenXi):
-                        Loss+=r[i,k]*self.__norm(X[i,:,:]-mu[k,:,:])
+                    mu[k,:,:]=np.sum([(1./nk)*r[i,k]*X[i,:,:] for i in range(lenXi)],axis=0)
+
+                Loss=np.sum([r[i,k]*self.__norm(X[i,:,:]-mu[k,:,:]) for i in range(lenXi)])
 
             deltaLoss=abs(oldLoss-Loss)
             print 'Delta Loss:',deltaLoss
@@ -73,6 +67,7 @@ class KMeans(object):
     # This should return the arrays for D images from each cluster that are representative of the clusters.
     def get_representative_images(self, D):
         pass
+
 
     # img_array should be a 2D (square) numpy array.
     # Note, you are welcome to change this function (including its arguments and return values) to suit your needs.
