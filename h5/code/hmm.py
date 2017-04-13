@@ -33,19 +33,19 @@ def format_array_print(arr):
 def string_of_model(model, label):
     (initial, tran_model, obs_model) = model
     return """
-Model: %s 
-initial: 
-%s
-
-transition: 
-%s
-
-observation: 
-%s
-""" % (label, 
-       format_array(initial),
-       format_array(tran_model),
-       format_array(obs_model))
+    Model: %s 
+    initial: 
+    %s
+    
+    transition: 
+    %s
+    
+    observation: 
+    %s
+    """ % (label,
+           format_array(initial),
+           format_array(tran_model),
+           format_array(obs_model))
 
     
 def check_model(model):
@@ -100,11 +100,11 @@ class HMM:
 
     def __repr__(self):
         return """states = %s
-observations = %s
-%s
-""" % (" ".join(array_to_string(self.states)), 
-       " ".join(array_to_string(self.outputs)), 
-       string_of_model((self.initial, self.transition, self.observation), ""))
+        observations = %s
+        %s
+        """ % (" ".join(array_to_string(self.states)),
+               " ".join(array_to_string(self.outputs)),
+               string_of_model((self.initial, self.transition, self.observation), ""))
 
      
     # declare the @ decorator just before the function, invokes print_timing()
@@ -118,7 +118,7 @@ observations = %s
         """
 
         # Fill this in...
-        # raise Exception("Not implemented")
+        raise Exception("Not implemented")
         
 
     def most_likely_states(self, sequence, debug=False):

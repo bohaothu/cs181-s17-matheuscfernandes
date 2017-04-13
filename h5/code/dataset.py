@@ -58,12 +58,12 @@ class DataSet:
         seq = []
         switched = False
 
-	for line in file.readlines():
+        for line in file.readlines():
             line = line.strip()
             if len(line) == 0:
                 continue
 
-	    if line ==  "." or line == "..":
+            if line ==  "." or line == "..":
                 # end of sequence
                 sequences.append(seq)
                 seq = []
@@ -75,76 +75,76 @@ class DataSet:
                     train_sequences = sequences
                     sequences = []
 
-            else:
-                words = line.split();
-                
-                state = words[0]
-                # Keep track of all the states/outputs
-                states.add(state)
+                else:
+                    words = line.split();
 
-                for output in words[1:]:
-                    outputs.add(output)
-                    seq.append( (state, output) )
+                    state = words[0]
+                    # Keep track of all the states/outputs
+                    states.add(state)
 
-        # By the time we get here, better have seen the train/test
-        # divider
-        if not switched:
-            raise Exception("File must have exactly one '..' line")
+                    for output in words[1:]:
+                        outputs.add(output)
+                        seq.append( (state, output) )
 
-        # Don't forget to add the last sequence!
-        if len(seq) > 0:
-            sequences.append(seq)
-                    
-        # Ok, the sequences we have now are the test ones
-        test_sequences = sequences
+            # By the time we get here, better have seen the train/test
+            # divider
+            if not switched:
+                raise Exception("File must have exactly one '..' line")
 
-        # Now that we have all the states and outputs, create a numbering
-        self.states = list(states)
-        self.states.sort()
-        self.outputs = list(outputs)
-        self.outputs.sort()
-        state_map = list_index(self.states)
-        output_map = list_index(self.outputs)
+            # Don't forget to add the last sequence!
+            if len(seq) > 0:
+                sequences.append(seq)
 
-        self.train_state = map((lambda seq: map(lambda p: state_map[p[0]], seq)),
-                               train_sequences)
-        self.train_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)), 
-                               train_sequences)
+            # Ok, the sequences we have now are the test ones
+            test_sequences = sequences
 
-        self.test_state = map((lambda seq: map (lambda p: state_map[p[0]], seq)), 
-                               test_sequences)
-        self.test_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)), 
-                               test_sequences)
+            # Now that we have all the states and outputs, create a numbering
+            self.states = list(states)
+            self.states.sort()
+            self.outputs = list(outputs)
+            self.outputs.sort()
+            state_map = list_index(self.states)
+            output_map = list_index(self.outputs)
 
-        if self.debug:
-            print self
+            self.train_state = map((lambda seq: map(lambda p: state_map[p[0]], seq)),
+                                   train_sequences)
+            self.train_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)),
+                                   train_sequences)
+
+            self.test_state = map((lambda seq: map (lambda p: state_map[p[0]], seq)),
+                                   test_sequences)
+            self.test_output = map((lambda seq: map (lambda p: output_map[p[1]], seq)),
+                                   test_sequences)
+
+            if self.debug:
+                print self
 
     def __repr__(self):
         return """
-States:
-%s
-
-Outputs:
-%s
-
-Training states:
-%s
-
-"Training output:"
-%s
-
-"Testing states:"
-%s
-
-"Testing output:"
-%s
-
-""" % (self.states,
-       self.outputs,
-       self.train_state,
-       self.train_output,
-       self.test_state,
-       self.test_output)
+        States:
+        %s
+        
+        Outputs:
+        %s
+        
+        Training states:
+        %s
+        
+        "Training output:"
+        %s
+        
+        "Testing states:"
+        %s
+        
+        "Testing output:"
+        %s
+        
+        """ % (self.states,
+               self.outputs,
+               self.train_state,
+               self.train_output,
+               self.test_state,
+               self.test_output)
     
 
 if __name__ == "__main__":
