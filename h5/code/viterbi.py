@@ -13,7 +13,7 @@ from hmm import HMM
 import sys
 
 @print_timing
-def run_viterbi(hmm, d, debug=False):
+def run_viterbi(hmm, d, debug=True):
     """Run the viterbi algorithm for each test sequence in the given dataset"""
     total_error = 0
     total_n = 0

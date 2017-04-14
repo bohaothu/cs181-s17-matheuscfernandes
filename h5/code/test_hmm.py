@@ -11,6 +11,7 @@ import functools
 import math
 import unittest
 
+
 class HMMsTest(unittest.TestCase):
     # test for learn_from_labeled_data()
     def test_simple_hmm_learning(self):
@@ -29,15 +30,15 @@ class HMMsTest(unittest.TestCase):
                                    [0.625000, 0.375000]]) < eps)
 
 
-    def simple_weather_model():
-        hmm = HMM(['s1','s2'], ['R','NR'])
-        init = [0.7, 0.3]
-        trans = [[0.8,0.2],
-                 [0.1,0.9]]
-        observ = [[0.75,0.25],
-                  [0.4,0.6]]
-        hmm.set_hidden_model(init, trans, observ)
-        return hmm
+def simple_weather_model():
+    hmm = HMM(['s1','s2'], ['R','NR'])
+    init = [0.7, 0.3]
+    trans = [[0.8,0.2],
+             [0.1,0.9]]
+    observ = [[0.75,0.25],
+              [0.4,0.6]]
+    hmm.set_hidden_model(init, trans, observ)
+    return hmm
 
 class ViterbiTest(unittest.TestCase):
     def toy_model(self):

@@ -2,6 +2,7 @@
 
 from util import * 
 from numpy import *
+import numpy as np
 from math import log
 import copy
 import sys
@@ -117,19 +118,74 @@ class HMM:
         Implement for (a).
         """
 
-        # Fill this in...
-        raise Exception("Not implemented")
+        num_states=self.num_states
+
+        theta=ones((num_states))
+        for i in range(len(state_seqs)):
+            theta[state_seqs[i][0]]+=1
+        theta=theta/sum(theta)
+        self.initial=theta
+
+        t=ones((num_states,num_states))
+        for i in range(len(state_seqs)):
+            for k in range(len(state_seqs[i])-1):
+                t[state_seqs[i][k],state_seqs[i][k+1]]+=1
+        for s in range(num_states):
+            t[s,:]=t[s,:]/sum(t[s,:])
+        self.transition=t
+
+        pi=ones((num_states,num_states))
+        for i in range(len(state_seqs)):
+            for k in range(len(state_seqs[i])):
+                pi[state_seqs[i][k],obs_seqs[i][k]]+=1
+
+        for s in range(num_states):
+            pi[s,:]=pi[s,:]/sum(pi[s,:])
+        self.observation=pi
+
+        # raise Exception("Not implemented")
         
 
-    def most_likely_states(self, sequence, debug=False):
+    def most_likely_states(self, sequence, debug=True):
         """Return the most like sequence of states given an output sequence.
         Uses Viterbi algorithm to compute this.
         Implement for (b) and (c).
         """
-        # Fill this in...
-        raise Exception("Not implemented")
+        #this is being coded as according to the wikipedia page and notation
+        #https://en.wikipedia.org/wiki/Viterbi_algorithm
 
-    
+        pi=self.initial
+        A=self.transition
+        B=self.observation
+
+        num_states=self.num_states
+        num_sequence=len(sequence)
+
+        #initializing the T's
+        T1 = zeros((num_states, num_sequence))
+        T2 = zeros((num_states, num_sequence))
+
+        for i in range(num_states):
+            T1[i,0]=np.log(pi[i])+np.log(B[i,sequence[0]])
+            # T2[i,0]=0 this is implied, but not computed for efficiency
+        for i in range(1,num_sequence):
+            for j in range(num_states):
+                T1[j,i]=np.log(B[j,sequence[i]])+max(T1[:,i-1]+np.log(A[:,j]))
+                T2[j,i]=argmax(T1[:,i-1]+np.log(A[:,j]))
+        zI=argmax(T1[:,-1])
+        X=zeros(num_sequence)
+        X[-1]=zI
+
+        for i in range(num_sequence-1,0,-1):
+            zI=T2[int(zI),i]
+            X[i-1]=int(zI)
+
+        X=list(X.astype(int))
+
+        return X
+
+        # raise Exception("Not implemented")
+
 def get_wikipedia_model():
     # From the rainy/sunny example on wikipedia (viterbi page)
     hmm = HMM(['Rainy','Sunny'], ['walk','shop','clean'])
@@ -146,5 +202,3 @@ def get_toy_model():
     observ = [[0.1,0.9], [0.9,0.1]]
     hmm.set_hidden_model(init, trans, observ)
     return hmm
-    
-
